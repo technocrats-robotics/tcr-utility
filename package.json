@@ -1,0 +1,25 @@
+{
+  "name": "tcr-mail-utility",
+  "version": "1.0.0",
+  "description": "A utility to send emails from TCR's official website. ",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/technocrats-robotics/tcr-mail-utility.git"
+  },
+  "author": "Shivansh Goel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/technocrats-robotics/tcr-mail-utility/issues"
+  },
+  "homepage": "https://github.com/technocrats-robotics/tcr-mail-utility#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "nodemailer": "^6.4.17"
+  }
+}
