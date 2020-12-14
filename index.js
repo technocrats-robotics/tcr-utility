@@ -47,9 +47,14 @@ app.post("/sendMail",async(req,res)=>{
         to: req.body.email||'technocratsroboticsvit@gmail.com',
         subject: 'Technocrats Member Profile Credentials',
         html: `
-        <h1><u>Credentials for your Technocrats Member Profile</u></h1>
-        <p><b><u>Username:</u></b> ${req.body.data.username}</p>
-        <p><b><u>Password:</u></b> ${req.body.data.password}</p>
+        <h1>Welcome to Technocrats Robotics</h1>
+        <p>Click on the&nbsp;<strong>Member Login</strong> button at the bottom footer of the web app.</p>
+        <p><span style="color: #0000ff;">Following are your credentials to customize your profile on the web app:<br /> <span style="color: #ff0000;"><strong>Username:</strong> ${req.body.data.username}</span><br /><span style="color: #ff0000;"><strong>Password:</strong> ${req.body.data.password}<br /></span>Whosoever holds these credentials, if he be worthy, shall possess the power of a Member.</span></p>
+        <p>Once logged in, change your password for the security of your information.<br />Also, modify your profile to reflect the changes in your member cards in the&nbsp;<strong>Teams</strong> section.</p>
+        <p>Enjoy!🔥</p>
+        <blockquote>
+        <p><strong>This is only a foretaste of what is to come, and only the shadow of what is going to be. <em>~ Alan Turing</em></strong></p>
+        </blockquote>
         `
     };
     
