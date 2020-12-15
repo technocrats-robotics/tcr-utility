@@ -3,6 +3,7 @@ const cors=require('cors')
 const nodemailer=require('nodemailer')
 const bodyParser = require('body-parser');
 const app = express();
+const {getAlbum}=require('./googlePhotos')
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
@@ -97,6 +98,18 @@ app.post("/sendFeedback",async(req,res)=>{
             res.status(200).send({message:"Sent"});
         }
     });
+})
+
+
+/**
+ * get the album id from google photos and pass it in the function getAlbum(<id>)
+ * 
+ */
+
+app.get("/gallery",async(req,res)=>{
+    const result = await getAlbum('CLWG7tFnCrg7MRRB6')
+    console.log(result)
+    res.json(result)
 })
 
 
