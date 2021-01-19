@@ -20,3 +20,7 @@ async function getAlbum(id) {
 module.exports = {
  getAlbum 
 }
+
+/*
+* Reference: https://medium.com/@ValentinHervieu/how-i-used-google-photos-to-host-my-website-pictures-gallery-d49f037c8e3c
+*/
