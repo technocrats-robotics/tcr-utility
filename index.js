@@ -107,7 +107,7 @@ app.post("/sendFeedback",async(req,res)=>{
  */
 
 app.get("/gallery",async(req,res)=>{
-    const result = await getAlbum('CLWG7tFnCrg7MRRB6')
+    const result = await getAlbum('Syn797zndgSyrKom7')
     console.log(result)
     res.json(result)
 })
