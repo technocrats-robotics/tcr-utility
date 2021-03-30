@@ -1,1 +1,4 @@
 node_modules
+
+## sensitive information
+constants.js

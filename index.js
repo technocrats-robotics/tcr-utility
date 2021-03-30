@@ -1,15 +1,27 @@
-const express=require('express')
-const cors=require('cors')
-const nodemailer=require('nodemailer')
-const bodyParser = require('body-parser');
+const express = require('express')
+const cors = require('cors')
+const bodyParser = require('body-parser')
 const app = express();
-const {getAlbum}=require('./googlePhotos')
 
+// user verification
+const verifyToken = require('./ValidateUser/validateuser')
+
+// google photos
+const { getAlbum } = require('./GooglePhotos/googlePhotos')
+
+// mail
+const transporter = require('./Mailer/transporter')
+const sendEmail = require('./Mailer/mail')
+
+// constants
+const { EMAIL, EMAILTO, ALBUMID } = require('./constants')
+
+// middlewares
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json())
 app.use(cors())
 
-
+app.use(express.static("public"));
 
 /**
  * To change email id (to be used for sending emails)
@@ -18,34 +30,21 @@ app.use(cors())
  * 2. Then go to 'allow less secure apps..'.
  * 3. Generate a new password and use that here to allow nodemailer to logging in your gmail account, skipping 2 step verification step.
  *  
- * 
  * Reference:
  * https://stackoverflow.com/questions/26196467/sending-email-via-node-js-using-nodemailer-is-not-working
  * 
- * If you want to send emails from different accounts, then you'll have to create multiple transporters.
- * 
- * Also make sure that transporter is defined globally, out from all the routes.  
  */
-
-
-var transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'tcrvitcc@gmail.com',
-        pass: 'skgcymxjkreofwrs'
-    }
-});
 
 
 /**
  * this endpoint is for sending user's credentials when a new account is created from admin panel.
  */
 
-app.post("/sendMail",async(req,res)=>{
+app.post("/sendMail", verifyToken ,async (req, res, next) => {
 
     let mailOptions = {
-        from: 'tcrvitcc@gmail.com',
-        to: req.body.email||'technocratsroboticsvit@gmail.com',
+        from: EMAIL,
+        to: req.body.email || EMAIL,
         subject: 'Technocrats Member Profile Credentials',
         html: `
         <h1>Welcome to Technocrats Robotics</h1>
@@ -58,27 +57,22 @@ app.post("/sendMail",async(req,res)=>{
         </blockquote>
         `
     };
-    
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-            res.status(400).send({error:error})
-        } else {
-            console.log('Email sent: ' + info.response);
-            res.status(200).send({message:"Sent"});
-        }
-    });
+
+    let response = await sendEmail(transporter, mailOptions,next)
+
+    if (response)
+        res.status(200).send({ message: "Sent" });
 })
 
 
 /**
  * endpoint to send feedback submitted by user in Contact Us form to TCR's official mail id 
  */
-app.post("/sendFeedback",async(req,res)=>{
+app.post("/sendFeedback", verifyToken ,async (req, res, next) => {
 
     let mailOptions = {
-        from: 'tcrvitcc@gmail.com',
-        to: 'technocratsroboticsvit@gmail.com',
+        from: EMAIL,
+        to: EMAILTO,
         subject: 'Got a Feedback !!',
         html: `
         <h1><u>Feedback</u></h1>
@@ -88,16 +82,11 @@ app.post("/sendFeedback",async(req,res)=>{
         <p><b><u>Message:</u></b> ${req.body.data.message}</p>
         `
     };
-    
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-            res.status(400).send({error:error})
-        } else {
-            console.log('Email sent: ' + info.response);
-            res.status(200).send({message:"Sent"});
-        }
-    });
+
+    const response = await sendEmail(transporter, mailOptions, next)
+
+    if (response)
+        res.status(200).send({ message: "Sent" });
 })
 
 
@@ -106,25 +95,33 @@ app.post("/sendFeedback",async(req,res)=>{
  * 
  */
 
-app.get("/gallery",async(req,res)=>{
-    const result = await getAlbum('Syn797zndgSyrKom7')
-    console.log(result)
+app.get("/gallery", verifyToken,async (req, res, next) => {
+    const result = await getAlbum(ALBUMID)
     res.json(result)
 })
 
-
-
-/**
- * Dummy URL
+/*
+ * information
  */
-app.get("/",(req,res)=>{
-    console.log("in /")
-    res.send("Hello World")
+app.get("/", (req, res, next) => {
+    res.sendFile(__dirname + "/" + "Information/information.html")
 })
+
+// error handler
+app.use((err, req, res, next) => {
+    res.status(err.status || 500)
+    res.send({
+        error: {
+            status: err.status || 500,
+            message: err.message
+        }
+    })
+})
+
 
 var port = process.env.PORT || 5000;
 
 
-app.listen(port, function() {
+app.listen(port, function () {
     console.log('Express server listening on port ' + port);
 });
