@@ -1,15 +1,14 @@
-const nodemailer = require('nodemailer')
+const nodemailer = require("nodemailer");
 
 // constants
-const { SERVICE, EMAIL, PASSWORD } = require('../constants')
+const { SERVICE, EMAIL, PASSWORD } = require("../constants");
 
 const transporter = nodemailer.createTransport({
-    service: SERVICE,
-    auth: {
-        user: EMAIL,
-        pass: PASSWORD
-    }
-})
+  service: SERVICE,
+  auth: {
+    user: EMAIL,
+    pass: PASSWORD,
+  },
+});
 
-
-module.exports = transporter
+module.exports = transporter;
